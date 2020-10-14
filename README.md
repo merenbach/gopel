@@ -1,6 +1,8 @@
 # Gopel
 
-_Gopel_ is one transliteration of the Yiddish word for "fork." This program presents a series of decision forks to the user, sorting an input JSON file into an output JSON file.
+_Gopel_ is a transliteration of the Yiddish word for "fork." This program presents a series of decision forks to the user to help prioritize a list of strings.
+
+This tool assumes that the items under evaluation hold transitive relative value. In practice this means that if you like pizza more than pasta, pasta more than pancakes, and pancakes more than pizza, the output may not reflect a satisfactory or consistent prioritization.
 
 ## Instructions
 

@@ -1,50 +1,38 @@
+// Copyright 2020 Andrew Merenbach
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 	http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"sort"
+
+	"github.com/merenbach/gopel/internal/fileutil"
 )
 
-// func lineInput(prompt string) string {
-// 	reader := bufio.NewReader(os.Stdin)
-// 	fmt.Print(prompt)
-// 	// fmt.Printf("%s ", prompt)
-// 	input, err := reader.ReadString('\n')
-// 	if err != nil {
-// 		// TODO: return err instead
-// 		log.Fatal(err)
-// 	}
-
-// 	// err = f(strings.TrimSpace(input))
-// 	// if err != nil {
-// 	//         fmt.Println(err)
-// 	// }
-
-// 	return strings.TrimSpace(input)
-// }
-
-func lineInput(prompt string) rune {
+func runeInput(prompt string) (rune, error) {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print(prompt)
-	// fmt.Printf("%s ", prompt)
 	input, _, err := reader.ReadRune()
 	if err != nil {
-		// TODO: return err instead
-		log.Fatal(err)
+		return (-1), err
 	}
-
-	// err = f(strings.TrimSpace(input))
-	// if err != nil {
-	//         fmt.Println(err)
-	// }
-
-	return input
+	return input, nil
 }
 
 func main() {
@@ -56,13 +44,8 @@ func main() {
 		log.Fatalln("Please specify input and output files")
 	}
 
-	bb, err := ioutil.ReadFile(*infile)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
 	var items []string
-	if err := json.Unmarshal(bb, &items); err != nil {
+	if err := fileutil.ReadJSON(*infile, &items); err != nil {
 		log.Fatalln(err)
 	}
 
@@ -72,24 +55,23 @@ func main() {
 			fmt.Println("Which is better?")
 			fmt.Printf("1 -> %s\n", items[i])
 			fmt.Printf("2 -> %s\n", items[j])
-			r := lineInput("? ")
+			r, err := runeInput("? ")
+			if err != nil {
+				log.Println("Unrecognized input")
+				continue
+			}
 			switch r {
 			case '1':
 				return true
 			case '2':
 				return false
 			default:
-				fmt.Println("Please enter a number.")
+				fmt.Println("Please enter 1 or 2")
 			}
 		}
 	})
 
-	bb2, err := json.Marshal(items)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	if err := ioutil.WriteFile(*outfile, bb2, 0644); err != nil {
+	if err := fileutil.WriteJSON(*outfile, items); err != nil {
 		log.Fatalln(err)
 	}
 }

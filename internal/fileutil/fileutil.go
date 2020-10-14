@@ -26,7 +26,7 @@ func ReadJSON(s string, i interface{}) error {
 		return err
 	}
 
-	if err := json.Unmarshal(bb, &i); err != nil {
+	if err := json.Unmarshal(bb, i); err != nil {
 		return err
 	}
 

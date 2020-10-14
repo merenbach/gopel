@@ -49,6 +49,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	fmt.Println("A series of interactive prompts will follow.")
 	sort.Slice(items, func(i int, j int) bool {
 		for {
 			fmt.Println()
@@ -70,6 +71,7 @@ func main() {
 			}
 		}
 	})
+	fmt.Println("All prompts have been answered.")
 
 	if err := fileutil.WriteJSON(*outfile, items); err != nil {
 		log.Fatalln(err)

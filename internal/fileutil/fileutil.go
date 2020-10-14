@@ -17,6 +17,7 @@ package fileutil
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 )
 
 // ReadJSON reads a JSON file into an interface.
@@ -29,6 +30,8 @@ func ReadJSON(s string, i interface{}) error {
 	if err := json.Unmarshal(bb, i); err != nil {
 		return err
 	}
+
+	log.Println("Successfully read data from file:", s)
 
 	return nil
 }
@@ -43,6 +46,8 @@ func WriteJSON(s string, i interface{}) error {
 	if err := ioutil.WriteFile(s, bb, 0644); err != nil {
 		return err
 	}
+
+	log.Println("Successfully wrote data to file:", s)
 
 	return nil
 }
